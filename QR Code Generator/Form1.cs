@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace QR_Code_Generator
@@ -43,39 +37,41 @@ namespace QR_Code_Generator
             {
                 // Displays a SaveFileDialog so the user can save the Image
                 // assigned to Button2.
-                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                saveFileDialog1.Filter = "JPeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif";
-                saveFileDialog1.Title = "Save an Image File";
-                saveFileDialog1.ShowDialog();
-
-                // If the file name is not an empty string open it for saving.
-                if (saveFileDialog1.FileName != "")
+                using (SaveFileDialog saveFileDialog1 = new SaveFileDialog())
                 {
-                    // Saves the Image via a FileStream created by the OpenFile method.
-                    System.IO.FileStream fs =
-                        (System.IO.FileStream)saveFileDialog1.OpenFile();
-                    // Saves the Image in the appropriate ImageFormat based upon the
-                    // File type selected in the dialog box.
-                    // NOTE that the FilterIndex property is one-based.
-                    switch (saveFileDialog1.FilterIndex)
+                    saveFileDialog1.Filter = "JPeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif|PNG Image|*.png";
+                    saveFileDialog1.Title = "Save an Image File";
+                    saveFileDialog1.ShowDialog();
+
+                    // If the file name is not an empty string open it for saving.
+                    if (saveFileDialog1.FileName != "")
                     {
-                        case 1:
-                            this.pictureBox1.Image.Save(fs,
-                              System.Drawing.Imaging.ImageFormat.Jpeg);
-                            break;
+                        // Saves the Image via a FileStream created by the OpenFile method.
+                        Stream fs = saveFileDialog1.OpenFile();
+                        // Saves the Image in the appropriate ImageFormat based upon the
+                        // File type selected in the dialog box.
+                        // NOTE that the FilterIndex property is one-based.
+                        switch (saveFileDialog1.FilterIndex)
+                        {
+                            case 1:
+                                pictureBox1.Image.Save(fs, ImageFormat.Jpeg);
+                                break;
 
-                        case 2:
-                            this.pictureBox1.Image.Save(fs,
-                              System.Drawing.Imaging.ImageFormat.Bmp);
-                            break;
+                            case 2:
+                                pictureBox1.Image.Save(fs, ImageFormat.Bmp);
+                                break;
 
-                        case 3:
-                            this.pictureBox1.Image.Save(fs,
-                              System.Drawing.Imaging.ImageFormat.Gif);
-                            break;
+                            case 3:
+                                pictureBox1.Image.Save(fs, ImageFormat.Gif);
+                                break;
+
+                            case 4:
+                                pictureBox1.Image.Save(fs, ImageFormat.Png);
+                                break;
+                        }
+
+                        fs.Close();
                     }
-
-                    fs.Close();
                 }
             }
             else
@@ -89,43 +85,43 @@ namespace QR_Code_Generator
 
         private void Text_Click2(object sender, EventArgs e)
         {
-            textBox1.BackColor = Color.FromArgb(11, 46, 25);
+            TextBox1.BackColor = Color.FromArgb(11, 46, 25);
             QR_Type = QRType.Email;
-            this.ActiveControl = textBox1;
+            this.ActiveControl = TextBox1;
         }
 
         private void Text_Click1(object sender, EventArgs e)
         {
-            textBox1.BackColor = Color.FromArgb(18, 53, 77);
+            TextBox1.BackColor = Color.FromArgb(18, 53, 77);
             QR_Type = QRType.Text;
-            this.ActiveControl = textBox1;
+            this.ActiveControl = TextBox1;
         }
 
         private void Text_Click(object sender, EventArgs e)
         {
-            textBox1.BackColor = Color.FromArgb(66, 41, 0);
+            TextBox1.BackColor = Color.FromArgb(66, 41, 0);
             QR_Type = QRType.Website;
-            this.ActiveControl = textBox1;
+            this.ActiveControl = TextBox1;
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void TextBox1_TextChanged(object sender, EventArgs e)
         {
 
             if(QR_Type == QRType.Website)
             {
-                if(!textBox1.Text.Contains("https://") || !textBox1.Text.Contains("http://"))
-                QText = "https://" + textBox1.Text;
+                if(!TextBox1.Text.Contains("https://") || !TextBox1.Text.Contains("http://"))
+                QText = "https://" + TextBox1.Text;
             }
 
             if (QR_Type == QRType.Email)
             {
-                if (!textBox1.Text.Contains("mailto:"))
-                    QText = "mailto:" + textBox1.Text;
+                if (!TextBox1.Text.Contains("mailto:"))
+                    QText = "mailto:" + TextBox1.Text;
             }
 
             if(QR_Type == QRType.Text)
             {
-                QText = textBox1.Text;
+                QText = TextBox1.Text;
             }
 
             try
@@ -139,16 +135,6 @@ namespace QR_Code_Generator
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void button1_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.SetToolTip(button1, "Report an Error");
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            System.Diagnostics.Process.Start("mailto:mail@tecxick.com");
         }
     }
 }
